@@ -1,0 +1,30 @@
+capture:
+  monitor: 0            # 显示器索引，-1 为自动
+  target_width: 1280    # 降采样到该宽度再识别
+  fps: 10               # 抓帧率
+
+vision:
+  enable_diff_trigger: false   # 帧差触发开关（默认关，先验证主方案）
+  diff_threshold: 30           # 帧差平均强度阈值 0-255
+  diff_burst_ratio: 1.5        # 相对滑动均值突增倍数
+  roi: null                    # [x, y, w, h]，null = 全屏
+  templates:
+    ball_throw:     { path: templates/ball_throw.png,     threshold: 0.80 }
+    catch_success:  { path: templates/catch_success.png,  threshold: 0.82 }
+    catch_fail:     { path: templates/catch_fail.png,     threshold: 0.82 }
+  color_detect:
+    enable: false
+    success_color: [25, 180, 180, 35, 255, 255]  # HSV 上下界（游戏实测后填）
+    success_min_ratio: 0.03    # 像素占比下限
+  ocr:
+    enable: true
+    keywords: { "成功": success, "失败": fail }
+
+state_machine:
+  throw_timeout_s: 5.0    # 丢球后多久内未出结果 → UNKNOWN
+  result_timeout_s: 6.0   # 结果界面停留判定窗口
+  cooldown_s: 3.0         # 结果后冷却，防同事件重计
+
+stats:
+  csv_path: output/stats.csv
+  save_debug: true        # 事件发生时保存标注帧
